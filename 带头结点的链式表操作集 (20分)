@@ -103,3 +103,18 @@ bool Delete(List L, Position P) {
         return false;
     }
 }
+/*
+bool Delete(List L, Position P) {
+    List pre = L;
+    while (pre){
+        if(pre->Next == P){
+            pre->Next = P->Next;
+            free(P);
+            return true;
+        }
+        pre = pre->Next;
+    }
+        printf("Wrong Position for Deletion\n");
+        return false;
+}
+*/
