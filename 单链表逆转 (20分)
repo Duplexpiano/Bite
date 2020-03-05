@@ -27,11 +27,11 @@ int main()
 List Reverse(List L) {
     PtrToNode Old_head = L, New_head = NULL, Temp;
     while (Old_head) {
-        Temp = Old_head->Next;
-        Old_head->Next = New_head;
-        New_head = Old_head;
-        Old_head = Temp;
+        Temp = Old_head->Next;//记录旧表头的下一个节点
+        Old_head->Next = New_head;//旧表头指针反转
+        New_head = Old_head;//将旧表头逆转为新表头
+        Old_head = Temp;//更新旧表头
     }
-    L = New_head;
+    L = New_head;//更新L
     return L;
 }
