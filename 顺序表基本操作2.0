@@ -1,0 +1,102 @@
+#include <stdio.h>
+#include <malloc.h>
+#define MaxSize 10000
+typedef char ElemType;
+typedef struct
+{
+	ElemType data[MaxSize];
+	int length;
+} SqList;
+void InitList(SqList*& L);//初始化线性表
+void DestroyList(SqList*& L);//销毁线性表
+/*bool ListEmpty(SqList* L);//判定是否为空表
+int ListLength(SqList* L);//求表长*/
+void DispList(SqList* L);  //顺序输出顺序表元素值
+bool ListInsert(SqList*& L, int i, ElemType e);  //在第i位上插入一个元素e，插入成功时返回true,插入不成功时返回false. 其中：i为顺序表的逻辑序号。
+bool ListDelete(SqList*& L, int i, ElemType& e); //在第i个结点上删除一个元素, 返回删除的元素值e,且删除成功时返回true，删除不成功返回false。其中：i为顺序表的逻辑序号。
+bool ListDeleteElem(SqList*& L, ElemType e);  //删除元素值为e的结点，删除成功时返回true，删除 不成功返回false。
+
+int main()
+{
+	SqList* L;
+	ElemType e, ch;
+	int i = 1;
+	InitList(L);
+	while ((ch = getchar()) != '\n')
+	{
+		ListInsert(L, i, ch);  //在L的第i个结点位置上插入ch
+		i++;
+	}
+	DispList(L);
+	scanf("\n%d %c", &i, &ch);
+	ListInsert(L, i, ch);
+	DispList(L);
+	scanf("\n%d", &i);
+	if (ListDelete(L, i, e)) // 删除L的第i个结点
+	{
+		printf("delete %dth: %c\n", i, e);
+		DispList(L);
+		if (ListDeleteElem(L, e))       // 删除元素值为e的结点
+			printf("delete \'%c\' \n", e);
+		else
+			printf("delete \'%c\' failed!\n", e);
+	}
+	else
+		printf("delete %dth failed!\n", i);
+	DispList(L);
+	DestroyList(L);
+}
+void InitList(SqList*& L) {
+	L = (SqList*)malloc(sizeof(SqList));
+	L->length = 0;
+}
+void DestroyList(SqList*& L) {
+	free(L);
+}
+/*bool ListEmpty(SqList* L) {
+	return(L->length == 0);
+}
+int ListLength(SqList* L) {
+	return L->length;
+}*/
+void DispList(SqList* L) {
+	for (int i = 0; i < L->length; i++)
+		printf("%c", L->data[i]);
+	printf("\n");
+}
+bool ListInsert(SqList*& L, int i, ElemType e) {
+	int j;
+	if (i < 1 || i>L->length + 1)
+		return false;
+	i--;
+	for (j = L->length; j > i; j--)
+		L->data[j] = L->data[j-1];
+	L->data[i] = e;
+	if (L->length > MaxSize) return false;
+	L->length++;
+	return true;
+}
+bool ListDelete(SqList*& L, int i, ElemType& e) {
+	int j;
+	if (i < 1 || i > L->length)
+		return false;
+	i--;
+	e = L->data[i];
+	for (j = i; j < L->length - 1; j++)
+		L->data[j] = L->data[j + 1];
+	L->length--;
+	return true;
+}
+bool ListDeleteElem(SqList*& L, ElemType e) {
+	int k = 0, i = 0;
+	while (i < L->length) {
+		if (L->data[i] == e)
+			k++;
+		else
+			L->data[i - k] = L->data[i];
+		i++;
+	}
+	if (k == 0) return false;
+	L->length -= k;
+	return true;
+}
