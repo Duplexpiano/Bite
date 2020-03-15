@@ -1,0 +1,94 @@
+#include <stdio.h>
+#include <malloc.h>
+typedef char ElemType;
+typedef struct LNode	//定义单链表结点类型
+{
+	ElemType data;
+	struct LNode* next;
+} LinkList;
+void InitList(LinkList*& L);
+void DestroyList(LinkList*& L);
+void DispList(LinkList* L);
+bool ListInsert(LinkList*& L, int i, ElemType e);
+bool ListDelete(LinkList*& L, int i, ElemType& e);
+int main()
+{
+	LinkList* h;
+	ElemType e, ch;
+	InitList(h);
+	int i = 1;
+	while ((ch = getchar()) != '\n')
+	{
+		ListInsert(h, i, ch);
+		i++;
+	}
+	DispList(h);
+	scanf("\n%d", &i);
+	if (ListDelete(h, i, e))
+		printf("delete %dth: %c\n", i, e);
+	else
+		printf("delete failed!\n");
+	DispList(h);
+	DestroyList(h);
+	return 0;
+}
+
+void InitList(LinkList*& L) {
+	L = (LinkList*)malloc(sizeof(LinkList));
+	L->next = NULL;
+}
+void DestroyList(LinkList*& L) {
+	LinkList* pre = L, * p = L->next;
+	while (p) {
+		free(pre);
+		pre = p;
+		p = pre->next;
+	}
+	free(pre);
+}
+void DispList(LinkList* L) {
+	LinkList* p = L->next;
+	while (p) {
+		printf("%c ", p->data);
+		p = p->next;
+	}
+	printf("\n");
+}
+bool ListInsert(LinkList*& L, int i, ElemType e) {
+	int j = 0;
+	LinkList* p = L, * s;
+	while (j < i - 1 && p) {
+		j++;
+		p = p->next;
+	}
+	if (p == NULL)
+		return false;
+	else {
+		s = (LinkList*)malloc(sizeof(LinkList));
+		s->data = e;
+		s->next = p->next;
+		p->next = s;
+		return true;
+	}
+}
+bool ListDelete(LinkList*& L, int i, ElemType& e) {
+	int j = 0;
+	LinkList* p = L, * q;
+	if (i < 1)
+		return false;
+	while (j < i - 1 && p) {
+		j++;
+		p = p->next;
+	}
+	if (p == NULL)
+		return false;
+	else {
+		q = p->next;
+		if (q == NULL)
+			return false;
+		e = q->data;
+		p->next = q->next;
+		free(q);
+		return true;
+	}
+}
