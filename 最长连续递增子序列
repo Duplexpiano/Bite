@@ -1,0 +1,26 @@
+#include <stdio.h>
+int a[100001];
+int main() {
+	int n, x;
+	scanf("%d", &n);
+	for (int i = 0; i < n; i++)
+		scanf("%d", &a[i]);
+	int stp = 0, len = 1, maxstp = 0, maxlen = 1;
+	for (int i = 0; i < n; i++) {
+		if (a[i + 1] > a[i])
+			len++;
+		else {
+			if (len > maxlen) {
+				maxstp = stp;
+				maxlen = len;
+			}
+			stp = i + 1;
+			len = 1;
+		}
+	}
+	printf("%d", a[maxstp]);
+	for (int i = 1; i < maxlen; i++)
+		printf(" %d", a[maxstp + i]);
+	printf("\n");
+	return 0;
+}
