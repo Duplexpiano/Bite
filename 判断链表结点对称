@@ -1,0 +1,93 @@
+#include <stdio.h>
+
+typedef char ElemType;
+typedef struct DNode	//定义循环双链表结点类型
+{
+	ElemType data;
+	struct DNode* prior, * next;
+} DLinkNode;
+
+void InitList(DLinkNode*& L);		//初始化一个空的带头节点的双向循环链表
+void DestroyList(DLinkNode*& L);  // 销毁链表
+bool ListInsert(DLinkNode*& L, int i, ElemType e); // 在链表第i个节点处插入元素为e的节点
+void DispList(DLinkNode* L);  // 正向顺序输出链表，输出时每个节点元素之间以空格符间隔，以换行符结束。
+int Symm(DLinkNode* L);  // 判断链表是否对称，对称时返回1，不对称时返回0，链表为空时返回-1
+
+int main()
+{
+	DLinkNode* h;
+	ElemType e;
+	InitList(h);
+	int i = 1;
+	char ch;
+	while ((ch = getchar()) != '\n')
+	{
+		ListInsert(h, i, ch);
+		i++;
+	}
+	DispList(h);
+
+	if (Symm(h) == 1)
+		printf("yes\n");
+	else if (Symm(h) == 0)printf("no\n");
+	else printf("NULL\n");
+	DestroyList(h);
+	return 0;
+}
+
+void InitList(DLinkNode*& L) {
+	L = new DNode;
+	L->next = L->prior = L;
+}
+
+void DestroyList(DLinkNode*& L) {
+	DLinkNode* pre = L, * p = L->next;
+	while (p != L) {
+		delete(pre);
+		pre = p;
+		p = p->next;
+	}
+	delete(pre);
+}
+
+bool ListInsert(DLinkNode*& L, int i, ElemType e) {
+	int j = 0;
+	DLinkNode* p = L, * s;
+	while (j < i - 1 && p) {
+		p = p->next;
+		j++;
+	}
+	if (!p)
+		return false;
+	s = new DLinkNode;
+	s->data = e;
+	s->next = p->next;
+	p->next->prior = s;
+	p->next = s;
+}
+
+void DispList(DLinkNode* L) {
+	DLinkNode* p = new DLinkNode;
+	p = L->next;
+	if (!L)
+		printf("NULL");
+	while (p != L&&p) {
+		printf("%c ", p->data);
+		p = p->next;
+	}
+	printf("\n");
+}
+
+int Symm(DLinkNode* L) {
+	if (L->next == L) return -1;
+	DLinkNode* p = L->next, * q = L->prior;
+	while (p != q) {
+		if (p->data == q->data) {
+			p = p->next;
+			q = q->prior;
+		}
+		else
+			return 0;
+	}
+	return 1;
+}
