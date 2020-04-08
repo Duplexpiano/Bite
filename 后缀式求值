@@ -1,0 +1,119 @@
+#include < stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+
+#define MAXOP 100
+#define INFINITY 1e9
+#define gets gets_s
+#define ERROR -1
+typedef double ElementType;
+typedef enum Type{ num, opr, end }Type;
+
+typedef int Position;
+typedef struct SNode* PtrToSNode;
+struct SNode {
+	ElementType* Data;
+	Position Top;
+	int MaxSize;
+};
+typedef PtrToSNode Stack;
+
+Stack CreateStack(int MaxSize);
+bool IsFull(Stack S);
+bool Push(Stack S, ElementType X);
+bool IsEmpty(Stack S);
+ElementType Pop(Stack S);
+Type GetOp(char* Expr, int* start, char* str);
+ElementType PostfixExp(char* Expr);
+
+int main() {
+	char Expr[MAXOP];
+	ElementType f;
+	fgets(Expr, MAXOP, stdin);
+	f = PostfixExp(Expr);
+	if (f < INFINITY)
+		printf("%.1f\n", f);
+	else;
+	return 0;
+}
+
+Stack CreateStack(int MaxSize) {
+	Stack S = (Stack)malloc(sizeof(struct SNode));
+	S->Data = (ElementType*)malloc(MaxSize * sizeof(ElementType));
+	S->Top = -1;
+	S->MaxSize = MaxSize;
+	return S;
+}
+bool IsFull(Stack S) {
+	return (S->Top == S->MaxSize - 1);
+}
+bool Push(Stack S, ElementType X) {
+	if (S->Top == S->MaxSize - 1)
+		return false;
+	else {
+		S->Data[++(S->Top)] = X;
+		return true;
+	}
+}
+bool IsEmpty(Stack S) {
+	return (S->Top == -1);
+}
+ElementType Pop(Stack S) {
+	if (S->Top == -1)
+		return ERROR;
+	else return (S->Data[(S->Top)--]);
+}
+Type GetOp(char* Expr, int* start, char* str) {
+	int i = 0;
+	while ((str[0] = Expr[(*start)++]) == ' ');
+	while (str[i] != ' ' && str[i] != '\0')
+		str[++i] = Expr[(*start)++];
+	if (str[i] == '\0')
+		(*start)--;
+	str[i] = '\0';
+	if (i == 0) return end;
+	else if (isdigit(str[0]) || isdigit(str[1]))
+		return num;
+	else
+		return opr;
+}
+ElementType PostfixExp(char* Expr) {
+	Stack S;
+	Type T;
+	ElementType op1, op2;
+	char str[MAXOP];
+	int start = 0;
+	S = CreateStack(MAXOP);
+	op1 = op2 = 0;
+	while ((T = GetOp(Expr, &start, str)) != end) {
+		if (T == num)
+			Push(S, atof(str));
+		else {
+			if (!IsEmpty(S)) op2 = Pop(S);
+			else op2 = INFINITY;
+			if (!IsEmpty(S)) op1 = Pop(S);
+			else op2 = INFINITY;
+			switch (str[0]) {
+			case '+': Push(S, op1 + op2); break;
+			case '*': Push(S, op1 * op2); break;
+			case '-': Push(S, op1 - op2); break;
+			case '/':
+				if (op2 != 0.0)
+					Push(S, op1 / op2);
+				else
+					op2 = INFINITY;
+				break;
+			default:
+				op2 = INFINITY;
+				break;
+			}
+			if (op2 >= INFINITY) break;
+		}
+	}
+	if (op2 < INFINITY)
+		if (!IsEmpty(S))
+			op2 = Pop(S);
+		else op2 = INFINITY;
+	free(S);
+	return op2;
+}
