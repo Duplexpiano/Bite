@@ -1,0 +1,23 @@
+#include <stdio.h>
+#include <string.h>
+
+int StrCmp(const char* str1, const char* str2);
+
+int main()
+{
+    char a[1024], b[1024];
+    int r;
+    gets_s(a);
+    gets_s(b);
+    r = StrCmp(a, b);
+    puts(!r ? "a = b" : r > 0 ? "a > b" : "a < b");
+    return 0;
+}
+
+int StrCmp(const char* str1, const char* str2) {
+    while (*str1 == *str2 && *str1 != '\0') {
+        str1++;
+        str2++;
+    }
+    return *str1 - *str2;
+}
