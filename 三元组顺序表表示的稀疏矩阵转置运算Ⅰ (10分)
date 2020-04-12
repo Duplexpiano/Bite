@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define MAXSIZE 100
+typedef int DT;
+typedef struct {
+	int r, c;
+	DT value;
+}rcv;
+typedef struct {
+	int row, col, num;
+	rcv data[MAXSIZE];
+}MAT;
+
+void TPM(MAT* A, MAT* B);
+
+int main() {
+	MAT A, B;
+	int m, n, t;
+	scanf("%d%d%d", &m, &n, &t);
+	B.col = A.row = m;
+	B.row = A.col = n;
+	B.num = A.num = t;
+	for (int i = 0; i < t; i++)
+		scanf("%d%d%d", &A.data[i].r, &A.data[i].c, &A.data[i].value);
+	TPM(&A, &B);
+	for (int i = 0; i < t; i++) {
+		printf("%d %d %d\n", B.data[i].r, B.data[i].c, B.data[i].value);
+	}
+}
+void TPM(MAT* A, MAT* B) {
+	int q = 0;
+	for (int i = 0; i < A->col; i++)
+		for(int p = 0; p < A->num; p++)
+			if (A->data[p].c == i) {
+				B->data[q].r = A->data[p].c;
+				B->data[q].c = A->data[p].r;
+				B->data[q].value = A->data[p].value;
+				q++;
+			}
+}
