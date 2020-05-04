@@ -1,0 +1,91 @@
+#include <stdio.h>
+#include <malloc.h>
+#define MaxSize 100
+
+typedef char ElemType;
+typedef struct node
+{
+	ElemType data;			//数据元素
+	struct node* lchild;		//指向左孩子
+	struct node* rchild;		//指向右孩子
+} BTNode;
+
+void CreateBTNode(BTNode*& b);  // 键盘输入括号表示法表示二叉树的字符串，并由此创建二叉树b,  裁判程序实现，细节不表。
+int Nodes(BTNode* b);	//求二叉树b的节点个数
+int main()
+{
+	BTNode* b;
+	CreateBTNode(b);
+	printf("%d", Nodes(b));
+	return 0;
+}
+
+
+int Nodes(BTNode* b) {
+	int n1, n2;
+	if (!b)	return 0;
+	else {
+		n1 = Nodes(b->lchild);
+		n2 = Nodes(b->rchild);
+		return n1 + n2 + 1;
+	}
+}
+/*
+
+#include<stdlib.h>
+#include<stdio.h>
+#include<malloc.h>
+ 
+//函数状态码定义
+#define TRUE       1
+#define FALSE      0
+#define OK         1
+#define ERROR      0
+#define OVERFLOW   -1
+#define INFEASIBLE -2
+ 
+typedef int Status;
+ 
+//二叉链表存储结构定义
+typedef int TElemType;
+typedef struct BiTNode{
+    TElemType data;
+    struct BiTNode  *lchild, *rchild; 
+} BiTNode, *BiTree;
+ 
+//先序创建二叉树各结点，输入0代表创建空树。
+Status CreateBiTree(BiTree &T){
+   TElemType e;
+   scanf("%d",&e);
+   if(e==0)T=NULL;
+   else{
+     T=(BiTree)malloc(sizeof(BiTNode));
+     if(!T)exit(OVERFLOW);
+     T->data=e;
+     CreateBiTree(T->lchild);
+     CreateBiTree(T->rchild);
+   }
+   return OK;  
+}
+ 
+//下面是需要实现的函数的声明
+int NodeCountOfBiTree ( BiTree T);
+//下面是主函数
+int main()
+{
+   BiTree T;
+   int n;	 
+   CreateBiTree(T);  //先序递归创建二叉树	 
+   n= NodeCountOfBiTree(T);	 
+   printf("%d",n);
+	 return 0;
+}
+
+int NodeCountOfBiTree ( BiTree T)
+{
+    if(T == NULL)
+        return 0;
+    else
+        return 1 + NodeCountOfBiTree(T->lchild) + NodeCountOfBiTree(T->rchild);
+}
+*/
