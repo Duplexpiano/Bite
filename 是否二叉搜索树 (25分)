@@ -1,0 +1,43 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+//typedef enum { false, true } bool;
+typedef int ElementType;
+typedef struct TNode* Position;
+typedef Position BinTree;
+struct TNode {
+    ElementType Data;
+    BinTree Left;
+    BinTree Right;
+};
+
+BinTree BuildTree(); /* 由裁判实现，细节不表 */
+bool IsBST(BinTree T);
+
+int main()
+{
+    BinTree T;
+
+    T = BuildTree();
+    if (IsBST(T)) printf("Yes\n");
+    else printf("No\n");
+
+    return 0;
+}
+
+bool IsBST(BinTree T) {
+    if ((!T) || (!T->Left) && (!T->Right))   return true;
+    else if (!(IsBST(T->Left)) && (IsBST(T->Right))) return false;
+    else {
+        BinTree TLeft, TRight;
+        if (T->Left) {
+            TLeft = T->Left;
+            while (TLeft->Right) TLeft = TLeft->Right;
+        }
+        if (T->Right) {
+            TRight = T->Right;
+            while (TRight->Left) TRight = TRight->Left;
+        }
+        return (T->Left ? (T->Data > TLeft->Data) : 1) && (T->Right ? (T->Data < TRight->Data):1);
+    }
+}
