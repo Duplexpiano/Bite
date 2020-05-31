@@ -1,0 +1,86 @@
+#include<iostream>
+using namespace std;
+#define MaxSize 100			//定义最大哈希表长度
+#define NULLKEY -1			//定义空关键字值
+#define DELKEY	-2			//定义被删关键字值
+typedef int KeyType;		//关键字类型
+typedef char* InfoType;	//其他数据类型
+typedef struct node
+{
+	KeyType key;			//关键字域
+	InfoType data;			//其他数据域
+	int count;				//探查次数域
+} HashTable[MaxSize];		//哈希表类型
+void InsertHT(HashTable ha, int& n, KeyType k, int p);//哈希表插入数据
+void CreateHT(HashTable ha, KeyType x[], int n, int m, int p);  //创建哈希表
+int SearchHT(HashTable ha, int p, KeyType k);	//在哈希表中查找关键字k
+int uns_count = 0;//查找不成功查找次数 
+int main()
+{
+	int n, p, m, i, k;
+	cin >> n >> p;
+	int x[n];
+	HashTable ha;
+	for (i = 0; i < n; i++) cin >> x[i];
+	m = p;
+	CreateHT(ha, x, n, m, p);
+	cin >> k;
+	uns_count = 0;
+	i = SearchHT(ha, p, k);
+	if (i != -1)
+	{
+		cout << k << " 哈希地址:" << i << endl;
+		cout << "查找次数：" << ha[i].count;
+	}
+	else
+	{
+		cout << "not find!" << endl;
+		cout << "查找次数：" << uns_count;
+	}
+	return 0;
+}
+
+void InsertHT(HashTable ha, int& n, KeyType k, int p)//哈希表插入数据，n表示哈希表数据个数，k插入关键字，p除数
+{
+	int i, adr;
+	adr = k % p;
+	if (ha[adr].key == NULLKEY || ha[adr].key == DELKEY) {
+		ha[adr].key = k;
+		ha[adr].count = 1;
+	}
+	else {
+		i = 1;
+		do {
+			adr = (adr + 1) % p;
+			i++;
+		} while (ha[adr].key != NULLKEY && ha[adr].key != DELKEY);
+		ha[adr].key = k;
+		ha[adr].count = i;
+	}
+	n++;
+}
+void CreateHT(HashTable ha, KeyType x[], int n, int m, int p)  //创建哈希表，x为输入数组，n输入数据个数，m为哈希表长度，这里假设m=p
+{
+	int i, n1 = 0;
+	for (i = 0; i < m; i++) {
+		ha[i].key = NULLKEY;
+		ha[i].count = 0;
+	}
+	for (i = 0; i < n; i++)
+		InsertHT(ha, n1, x[i], p);
+}
+int SearchHT(HashTable ha, int p, KeyType k)	//在哈希表中查找关键字k，找不到返回-1，找到返回查找地址
+{
+	int i = 0, adr;
+	adr = k % p;
+	while (ha[adr].key != NULLKEY && ha[adr].key != k) {
+		i++;
+		adr = (adr + 1) % p;
+	}
+	if (ha[adr].key == k)
+		return adr;
+	else {
+		uns_count = i + 1;
+		return -1;
+	}
+}
