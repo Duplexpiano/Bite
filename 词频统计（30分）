@@ -1,0 +1,57 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <map>
+#include <algorithm>
+
+using namespace std;
+
+bool cmp(pair<string, int> a, pair <string, int> b);
+
+int main() {
+	char ch;
+	string s;	//字符串用于记录一个单词
+	map<string, int> ma;	//map记录词频，string代表的单词出现次数为int
+	do {
+		ch = getchar();
+		/*当读到的是合法字符（大小写字母、数字下划线）*/
+		if ((ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z') || (ch >= '0' && ch <= '9') || ch == '_') {
+			if (s.size() <= 14) {	//当长度为14时再进行一次接入，长度为15就停止接入
+				if (ch >= 'A' && ch <= 'Z') {		//把大写换成小写
+					ch += 32;
+				}
+				s += ch;	//把单个字符ch接到字符串s后，string中有运算符重载所以加法表示接在后面
+			}
+		}
+		else {		        //当不是合法字符就表示这个词读取结束了，出现次数+1
+			if (s.size() > 0) {
+				ma[s]++;
+			}
+			s.clear();		//清空字符串以统计下一个单词
+		}
+		if (ch == '#') {	//退出循环
+			break;
+		}
+	} while (ch != '#');
+	/*存储pair的一个数组（把vector理解为增强版的数组）*/
+	vector<pair<string, int>> v(ma.begin(), ma.end());
+	sort(v.begin(), v.end(), cmp);
+	cout << v.size() << endl;
+	int cnt = (int)(ma.size() * 0.1);
+	for (int i = 0; i < cnt; i++) {
+		cout << v[i].second << ":" << v[i].first << endl;
+	}
+	return 0;
+}
+
+/*利用pair数据，每个pair数据都含有一个string数值和int数值*/
+bool cmp(pair<string, int> a, pair <string, int> b) {
+	bool result = false;
+
+	if (a.second == b.second && a.first < b.first)
+		result = true;
+	else if (a.second > b.second)
+		result = true;
+
+	return result;
+}
